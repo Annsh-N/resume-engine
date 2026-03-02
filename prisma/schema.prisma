@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+  FREELANCE
+  TEMPORARY
+  APPRENTICESHIP
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  education    Education[]
+  experiences  Experience[]
+  projects     Project[]
+  skillsGroups SkillsGroup[]
+  interests    Interests?
+  certificates Certificate[]
+  awards       Award[]
+  leadership   Leadership[]
+
+  @@map("users")
+}
+
+model Education {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id             Int
+  school              String
+  degree              String
+  majors              String[]
+  location            String
+  start_date          DateTime
+  end_date            DateTime
+  gpa                 Float?
+  notes               String?
+  relevant_coursework String[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("education")
+}
+
+model Experience {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id          Int
+  title            String
+  company          String
+  location         String
+  start_date       DateTime
+  end_date         DateTime?
+  employment_type  EmploymentType?
+  tags             String[]
+  tech_stack       String[]
+  priority         Int @default(5)
+  context          String?
+  facts            Json?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user    User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  bullets ExperienceBullet[]
+
+  @@index([user_id])
+  @@map("experiences")
+}
+
+model ExperienceBullet {
+  id String @id @default(uuid()) @db.Uuid
+
+  experience_id String @db.Uuid
+  order_index   Int
+  bullet_long   String
+  bullet_medium String?
+  bullet_short  String?
+  skills_tags   String[]
+  metrics       Json?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  experience Experience @relation(fields: [experience_id], references: [id], onDelete: Cascade)
+
+  @@index([experience_id])
+  @@index([experience_id, order_index])
+  @@map("experience_bullets")
+}
+
+model Project {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id     Int
+  name        String
+  description String?
+  start_date  DateTime
+  end_date    DateTime?
+  tags        String[]
+  tech_stack  String[]
+  priority    Int @default(5)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user    User            @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  bullets ProjectBullet[]
+
+  @@index([user_id])
+  @@map("projects")
+}
+
+model ProjectBullet {
+  id String @id @default(uuid()) @db.Uuid
+
+  project_id    String @db.Uuid
+  order_index   Int
+  bullet_long   String
+  bullet_medium String?
+  bullet_short  String?
+  skills_tags   String[]
+  metrics       Json?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+
+  @@index([project_id])
+  @@index([project_id, order_index])
+  @@map("project_bullets")
+}
+
+model SkillsGroup {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id    Int
+  group_name String
+  items      String[]
+  priority   Int @default(5)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("skills_groups")
+}
+
+model Interests {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id Int    @unique
+  items   String[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("interests")
+}
+
+model Certificate {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id        Int
+  name           String
+  issuer         String
+  issued_date    DateTime?
+  expires_date   DateTime?
+  credential_url String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("certificates")
+}
+
+model Award {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id Int
+  title   String
+  issuer  String
+  date    DateTime
+  notes   String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("awards")
+}
+
+model Leadership {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id    Int
+  role       String
+  org        String
+  location   String
+  start_date DateTime
+  end_date   DateTime?
+  bullets    String[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("leadership")
+}
