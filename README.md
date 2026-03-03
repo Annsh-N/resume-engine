@@ -95,19 +95,39 @@ Pattern for each section:
 
 - `GET /bank/export`
 
-Returns:
+Returns the full resume bank for `request.user.id` as one normalized payload. Empty sections return empty arrays/objects. Experiences and projects include nested `bullets` sorted by `order_index` ascending.
+
+#### Sample curl
+
+```bash
+curl http://localhost:3000/bank/export
+```
+
+#### Truncated response example
 
 ```json
 {
   "user": { "id": 1 },
-  "education": [],
-  "experiences": [],
-  "projects": [],
-  "skills": { "groups": [] },
-  "interests": { "items": [] },
-  "certificates": [],
-  "awards": [],
-  "leadership": [],
+  "education": [{ "id": "uuid", "school": "State University" }],
+  "experiences": [
+    {
+      "id": "uuid",
+      "title": "Software Engineer Intern",
+      "bullets": [{ "id": "uuid", "order_index": 1, "bullet_long": "..." }]
+    }
+  ],
+  "projects": [
+    {
+      "id": "uuid",
+      "name": "Resume Bank",
+      "bullets": [{ "id": "uuid", "order_index": 1, "bullet_long": "..." }]
+    }
+  ],
+  "skills": { "groups": [{ "id": "uuid", "group_name": "Languages", "items": ["TypeScript"] }] },
+  "interests": { "items": ["Hiking"] },
+  "certificates": [{ "id": "uuid", "name": "AWS Certified Cloud Practitioner" }],
+  "awards": [{ "id": "uuid", "title": "Hackathon Winner" }],
+  "leadership": [{ "id": "uuid", "role": "Engineering Club President" }],
   "meta": {
     "exported_at": "2026-03-02T00:00:00.000Z",
     "schema_version": 1
@@ -149,12 +169,6 @@ curl -X POST http://localhost:3000/experiences \
     "tech_stack": ["TypeScript", "Fastify", "PostgreSQL"],
     "priority": 1
   }'
-```
-
-### Export full bank
-
-```bash
-curl http://localhost:3000/bank/export
 ```
 
 ## Notes

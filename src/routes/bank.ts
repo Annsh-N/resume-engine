@@ -1,8 +1,24 @@
 import { FastifyPluginAsync } from "fastify";
 import prisma from "../db";
 
+type BankExportResponse = {
+  user: { id: number };
+  education: unknown[];
+  experiences: unknown[];
+  projects: unknown[];
+  skills: { groups: unknown[] };
+  interests: { items: string[] };
+  certificates: unknown[];
+  awards: unknown[];
+  leadership: unknown[];
+  meta: {
+    exported_at: string;
+    schema_version: 1;
+  };
+};
+
 const bankRoutes: FastifyPluginAsync = async (app) => {
-  app.get("/bank/export", async (request) => {
+  app.get("/bank/export", async (request): Promise<BankExportResponse> => {
     const [
       education,
       experiences,
@@ -15,11 +31,19 @@ const bankRoutes: FastifyPluginAsync = async (app) => {
     ] = await prisma.$transaction([
       prisma.education.findMany({
         where: { user_id: request.user.id },
-        orderBy: { start_date: "desc" },
+        orderBy: [
+          { end_date: "desc" },
+          { start_date: "desc" },
+          { created_at: "desc" },
+        ],
       }),
       prisma.experience.findMany({
         where: { user_id: request.user.id },
-        orderBy: [{ priority: "asc" }, { start_date: "desc" }],
+        orderBy: [
+          { end_date: { sort: "desc", nulls: "first" } },
+          { start_date: "desc" },
+          { created_at: "desc" },
+        ],
         include: {
           bullets: {
             orderBy: { order_index: "asc" },
@@ -28,7 +52,11 @@ const bankRoutes: FastifyPluginAsync = async (app) => {
       }),
       prisma.project.findMany({
         where: { user_id: request.user.id },
-        orderBy: [{ priority: "asc" }, { start_date: "desc" }],
+        orderBy: [
+          { end_date: { sort: "desc", nulls: "first" } },
+          { start_date: "desc" },
+          { created_at: "desc" },
+        ],
         include: {
           bullets: {
             orderBy: { order_index: "asc" },
@@ -37,14 +65,17 @@ const bankRoutes: FastifyPluginAsync = async (app) => {
       }),
       prisma.skillsGroup.findMany({
         where: { user_id: request.user.id },
-        orderBy: [{ priority: "asc" }, { group_name: "asc" }],
+        orderBy: [{ priority: "desc" }, { created_at: "desc" }],
       }),
       prisma.interests.findFirst({
         where: { user_id: request.user.id },
       }),
       prisma.certificate.findMany({
         where: { user_id: request.user.id },
-        orderBy: [{ issued_date: "desc" }, { created_at: "desc" }],
+        orderBy: [
+          { issued_date: { sort: "desc", nulls: "last" } },
+          { created_at: "desc" },
+        ],
       }),
       prisma.award.findMany({
         where: { user_id: request.user.id },
@@ -52,7 +83,11 @@ const bankRoutes: FastifyPluginAsync = async (app) => {
       }),
       prisma.leadership.findMany({
         where: { user_id: request.user.id },
-        orderBy: [{ start_date: "desc" }, { created_at: "desc" }],
+        orderBy: [
+          { end_date: { sort: "desc", nulls: "first" } },
+          { start_date: "desc" },
+          { created_at: "desc" },
+        ],
       }),
     ]);
 
