@@ -73,6 +73,7 @@ Server default: `http://localhost:3000`
 - `/certificates`
 - `/awards`
 - `/leadership`
+- `/profile`
 
 Pattern for each section:
 
@@ -80,6 +81,16 @@ Pattern for each section:
 - `POST /section`
 - `PUT /section/:id`
 - `DELETE /section/:id`
+
+Profile endpoints:
+
+- `GET /profile`
+- `POST /profile`
+- `PUT /profile`
+- `DELETE /profile`
+- `POST /profile/links`
+- `PUT /profile/links/:id`
+- `DELETE /profile/links/:id`
 
 ### Bullet endpoints
 
@@ -108,6 +119,16 @@ curl http://localhost:3000/bank/export
 ```json
 {
   "user": { "id": 1 },
+  "profile": {
+    "full_name": "Jane Doe",
+    "location": "Indianapolis, IN",
+    "phone": "+1-555-555-5555",
+    "email": "jane@example.com",
+    "headline": "Backend Engineer",
+    "links": [
+      { "label": "LinkedIn", "url": "https://linkedin.com/in/jane", "priority": 1 }
+    ]
+  },
   "education": [{ "id": "uuid", "school": "State University" }],
   "experiences": [
     {

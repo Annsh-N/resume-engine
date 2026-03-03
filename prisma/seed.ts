@@ -10,6 +10,7 @@ async function main() {
   });
 
   await prisma.$transaction([
+    prisma.userProfile.deleteMany({ where: { user_id: 1 } }),
     prisma.education.deleteMany({ where: { user_id: 1 } }),
     prisma.experience.deleteMany({ where: { user_id: 1 } }),
     prisma.project.deleteMany({ where: { user_id: 1 } }),
@@ -187,6 +188,36 @@ async function main() {
         "Organized weekly technical workshops for 80+ students.",
         "Launched peer mentorship program for incoming members.",
       ],
+    },
+  });
+
+  await prisma.userProfile.create({
+    data: {
+      user_id: 1,
+      full_name: "Jane Doe",
+      location: "Indianapolis, IN",
+      phone: "+1-555-555-5555",
+      email: "jane@example.com",
+      headline: "Backend Engineer",
+      links: {
+        create: [
+          {
+            label: "LinkedIn",
+            url: "https://linkedin.com/in/jane-doe",
+            priority: 2,
+          },
+          {
+            label: "GitHub",
+            url: "https://github.com/janedoe",
+            priority: 1,
+          },
+          {
+            label: "Portfolio",
+            url: "https://janedoe.dev",
+            priority: 0,
+          },
+        ],
+      },
     },
   });
 }

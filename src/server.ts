@@ -8,6 +8,7 @@ import educationRoutes from "./routes/education";
 import experiencesRoutes from "./routes/experiences";
 import interestsRoutes from "./routes/interests";
 import leadershipRoutes from "./routes/leadership";
+import profileRoutes from "./routes/profile";
 import projectsRoutes from "./routes/projects";
 import skillsRoutes from "./routes/skills";
 
@@ -50,6 +51,7 @@ server.register(interestsRoutes);
 server.register(certificatesRoutes);
 server.register(awardsRoutes);
 server.register(leadershipRoutes);
+server.register(profileRoutes);
 server.register(bankRoutes);
 
 const start = async () => {

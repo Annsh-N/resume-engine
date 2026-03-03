@@ -3,6 +3,18 @@ import prisma from "../db";
 
 type BankExportResponse = {
   user: { id: number };
+  profile: {
+    full_name: string;
+    location: string;
+    phone: string | null;
+    email: string;
+    headline: string | null;
+    links: Array<{
+      label: string;
+      url: string;
+      priority: number;
+    }>;
+  } | null;
   education: unknown[];
   experiences: unknown[];
   projects: unknown[];
@@ -25,6 +37,7 @@ const bankRoutes: FastifyPluginAsync = async (app) => {
       projects,
       skillsGroups,
       interests,
+      profile,
       certificates,
       awards,
       leadership,
@@ -70,6 +83,14 @@ const bankRoutes: FastifyPluginAsync = async (app) => {
       prisma.interests.findFirst({
         where: { user_id: request.user.id },
       }),
+      prisma.userProfile.findUnique({
+        where: { user_id: request.user.id },
+        include: {
+          links: {
+            orderBy: [{ priority: "desc" }, { created_at: "asc" }],
+          },
+        },
+      }),
       prisma.certificate.findMany({
         where: { user_id: request.user.id },
         orderBy: [
@@ -93,6 +114,20 @@ const bankRoutes: FastifyPluginAsync = async (app) => {
 
     return {
       user: { id: request.user.id },
+      profile: profile
+        ? {
+            full_name: profile.full_name,
+            location: profile.location,
+            phone: profile.phone,
+            email: profile.email,
+            headline: profile.headline,
+            links: profile.links.map((link) => ({
+              label: link.label,
+              url: link.url,
+              priority: link.priority,
+            })),
+          }
+        : null,
       education,
       experiences,
       projects,
