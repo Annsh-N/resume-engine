@@ -60,6 +60,7 @@ Server default: `http://localhost:3000`
 - `npm run prisma:generate` - Generate Prisma client
 - `npm run prisma:migrate` - Run Prisma dev migration
 - `npm run seed` - Seed sample data
+- `npm run render:tex` - Call `POST /render` and write `./out/resume.tex`
 
 ## Endpoints
 
@@ -153,6 +154,31 @@ curl http://localhost:3000/bank/export
     "exported_at": "2026-03-02T00:00:00.000Z",
     "schema_version": 1
   }
+}
+```
+
+### LaTeX render
+
+- `POST /render`
+
+Request body:
+
+```json
+{
+  "density": "normal",
+  "sectionOrder": ["education", "experience", "projects", "certifications", "skills", "interests", "awards", "leadership"],
+  "enabled": {
+    "awards": true,
+    "interests": false
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "latex": "\\documentclass[letterpaper,11pt]{article}..."
 }
 ```
 

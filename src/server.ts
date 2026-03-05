@@ -10,6 +10,7 @@ import interestsRoutes from "./routes/interests";
 import leadershipRoutes from "./routes/leadership";
 import profileRoutes from "./routes/profile";
 import projectsRoutes from "./routes/projects";
+import renderRoutes from "./routes/render";
 import skillsRoutes from "./routes/skills";
 
 const server = Fastify({ logger: true });
@@ -53,6 +54,7 @@ server.register(awardsRoutes);
 server.register(leadershipRoutes);
 server.register(profileRoutes);
 server.register(bankRoutes);
+server.register(renderRoutes);
 
 const start = async () => {
   try {
