@@ -61,6 +61,7 @@ Server default: `http://localhost:3000`
 - `npm run prisma:migrate` - Run Prisma dev migration
 - `npm run seed` - Seed sample data
 - `npm run render:tex` - Call `POST /render` and write `./out/resume.tex`
+- `npm run render:tex -- --template new_grad --include leadership,awards --output out/new-grad.tex` - Render a specific template with ordered optional sections
 
 ## Endpoints
 
@@ -165,14 +166,25 @@ Request body:
 
 ```json
 {
+  "template": "standard_swe",
   "density": "normal",
-  "sectionOrder": ["education", "experience", "projects", "certifications", "skills", "interests", "awards", "leadership"],
-  "enabled": {
-    "awards": true,
-    "interests": false
-  }
+  "includeSections": ["certifications", "awards"]
 }
 ```
+
+Available templates:
+
+- `new_grad`
+- `standard_swe`
+- `experienced_swe`
+- `projects_heavy`
+
+Template behavior:
+
+- `education`, `experience`, `projects`, and `skills` are always included
+- their order is fixed by the selected template
+- optional sections can be appended via `includeSections`
+- optional sections render in the same order they appear in `includeSections`
 
 Response:
 
