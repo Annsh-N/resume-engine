@@ -6,11 +6,13 @@ import bankRoutes from "./routes/bank";
 import certificatesRoutes from "./routes/certificates";
 import educationRoutes from "./routes/education";
 import experiencesRoutes from "./routes/experiences";
+import generateRoutes from "./routes/generate";
 import interestsRoutes from "./routes/interests";
 import leadershipRoutes from "./routes/leadership";
 import profileRoutes from "./routes/profile";
 import projectsRoutes from "./routes/projects";
 import renderRoutes from "./routes/render";
+import resumeVariantsRoutes from "./routes/resumeVariants";
 import skillsRoutes from "./routes/skills";
 
 const server = Fastify({ logger: true });
@@ -55,6 +57,8 @@ server.register(leadershipRoutes);
 server.register(profileRoutes);
 server.register(bankRoutes);
 server.register(renderRoutes);
+server.register(generateRoutes);
+server.register(resumeVariantsRoutes);
 
 const start = async () => {
   try {

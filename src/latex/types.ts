@@ -35,6 +35,8 @@ export type ExperienceBullet = {
   bullet_long?: string | null;
   bullet_medium?: string | null;
   bullet_short?: string | null;
+  skills_tags?: string[];
+  metrics?: unknown;
 };
 
 export type Experience = {
@@ -44,6 +46,12 @@ export type Experience = {
   location: string;
   start_date: DateLike;
   end_date: DateLike;
+  employment_type?: string | null;
+  tags: string[];
+  tech_stack: string[];
+  priority: number;
+  context?: string | null;
+  facts?: unknown;
   bullets: ExperienceBullet[];
   created_at: DateLike;
 };
@@ -54,6 +62,8 @@ export type ProjectBullet = {
   bullet_long?: string | null;
   bullet_medium?: string | null;
   bullet_short?: string | null;
+  skills_tags?: string[];
+  metrics?: unknown;
 };
 
 export type Project = {
@@ -62,7 +72,9 @@ export type Project = {
   description?: string | null;
   start_date: DateLike;
   end_date: DateLike;
+  tags: string[];
   tech_stack: string[];
+  priority: number;
   bullets: ProjectBullet[];
   created_at: DateLike;
 };
@@ -72,6 +84,8 @@ export type Certificate = {
   name: string;
   issuer: string;
   issued_date: DateLike;
+  expires_date?: DateLike;
+  credential_url?: string | null;
   created_at: DateLike;
 };
 
@@ -80,6 +94,7 @@ export type Award = {
   title: string;
   issuer: string;
   date: DateLike;
+  notes?: string | null;
   created_at: DateLike;
 };
 

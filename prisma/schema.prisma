@@ -20,15 +20,16 @@ enum EmploymentType {
 model User {
   id Int @id @default(autoincrement())
 
-  education    Education[]
-  experiences  Experience[]
-  projects     Project[]
-  skillsGroups SkillsGroup[]
-  interests    Interests?
-  certificates Certificate[]
-  awards       Award[]
-  leadership   Leadership[]
-  profile      UserProfile?
+  education      Education[]
+  experiences    Experience[]
+  projects       Project[]
+  skillsGroups   SkillsGroup[]
+  interests      Interests?
+  certificates   Certificate[]
+  awards         Award[]
+  leadership     Leadership[]
+  profile        UserProfile?
+  resumeVariants ResumeVariant[]
 
   @@map("users")
 }
@@ -268,4 +269,42 @@ model UserLink {
 
   @@index([profile_id])
   @@map("user_links")
+}
+
+model ResumeVariant {
+  id String @id @default(uuid()) @db.Uuid
+
+  user_id                     Int
+  name                        String
+  job_title                   String?
+  company                     String?
+  job_url                     String?
+  job_description             String
+  template                    String
+  density                     String
+  latex                       String
+  pdf_data                    Bytes?
+  page_count                  Int
+  fits_on_one_page            Boolean
+  compiler                    String?
+  trim_passes                 Int      @default(0)
+  estimated_line_budget       Int?
+  estimated_lines_used        Int?
+  include_sections            String[]
+  selected_education_ids      String[]
+  selected_skill_group_ids    String[]
+  selected_experience_ids     String[]
+  selected_project_ids        String[]
+  selected_certification_ids  String[]
+  selected_award_ids          String[]
+  selected_leadership_ids     String[]
+  plan                        Json
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("resume_variants")
 }

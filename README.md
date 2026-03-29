@@ -62,6 +62,7 @@ Server default: `http://localhost:3000`
 - `npm run seed` - Seed sample data
 - `npm run render:tex` - Call `POST /render` and write `./out/resume.tex`
 - `npm run render:tex -- --template new_grad --include leadership,awards --output out/new-grad.tex` - Render a specific template with ordered optional sections
+- `npm run generate:resume -- --sample backend --template standard_swe --output-prefix out/generated-backend` - Generate a JD-targeted resume, compile PDF, and write `.tex`, `.pdf`, and `.plan.json`
 
 ## Endpoints
 
@@ -193,6 +194,55 @@ Response:
   "latex": "\\documentclass[letterpaper,11pt]{article}..."
 }
 ```
+
+### Resume generation
+
+- `POST /generate`
+
+Request body:
+
+```json
+{
+  "jobDescription": "Backend software engineer role using TypeScript, Node.js, PostgreSQL, and AWS...",
+  "template": "standard_swe",
+  "density": "normal",
+  "includePdf": true
+}
+```
+
+Behavior:
+
+- always includes `education`, `skills`, and the best available baseline `experience` and `project`
+- ranks experiences, projects, skill groups, and optional sections against the JD
+- fills the remaining one-page budget using relevance per estimated line cost
+- caps experience/project bullets to `2-5`
+- compiles the generated `.tex` to PDF and trims content if the first render exceeds one page
+
+Response:
+
+```json
+{
+  "latex": "\\documentclass[letterpaper,11pt]{article}...",
+  "pdfBase64": "JVBERi0xLjcKJc...",
+  "pageCount": 1,
+  "fitsOnOnePage": true,
+  "compiler": "tectonic",
+  "trimPasses": 0,
+  "estimatedLineBudget": 36,
+  "estimatedLinesUsed": 31,
+  "plan": {
+    "template": "standard_swe",
+    "includeSections": [],
+    "selectedExperienceIds": ["uuid"],
+    "selectedProjectIds": ["uuid"]
+  }
+}
+```
+
+Notes:
+
+- PDF validation requires a local LaTeX compiler in `PATH`; this implementation is verified with `tectonic`
+- `qpdf` is used when available for reliable PDF page counting, with an internal fallback parser otherwise
 
 ## cURL examples
 

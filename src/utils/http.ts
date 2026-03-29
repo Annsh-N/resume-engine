@@ -29,6 +29,18 @@ export const parseParams = <T>(schema: ZodSchema<T>, params: unknown): T => {
   throw error;
 };
 
+export const parseQuery = <T>(schema: ZodSchema<T>, query: unknown): T => {
+  const parsed = schema.safeParse(query);
+  if (parsed.success) {
+    return parsed.data;
+  }
+
+  const error: HttpError = new Error("Invalid query parameters");
+  error.statusCode = 400;
+  error.details = parsed.error.flatten();
+  throw error;
+};
+
 export const notFound = (message = "Resource not found"): never => {
   const error: HttpError = new Error(message);
   error.statusCode = 404;

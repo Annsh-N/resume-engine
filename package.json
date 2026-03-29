@@ -11,7 +11,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "seed": "tsx prisma/seed.ts",
-    "render:tex": "tsx scripts/render-local.ts"
+    "render:tex": "tsx scripts/render-local.ts",
+    "generate:resume": "tsx scripts/generate-local.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

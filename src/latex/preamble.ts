@@ -48,7 +48,9 @@ export const renderPreamble = (density: Density = "normal"): string => {
 \\usepackage{fancyhdr}
 \\usepackage[english]{babel}
 \\usepackage{tabularx}
+\\ifdefined\\pdfglyphtounicode
 \\input{glyphtounicode}
+\\fi
 
 
 %----------FONT OPTIONS----------
@@ -94,7 +96,9 @@ export const renderPreamble = (density: Density = "normal"): string => {
 }{}{0em}{}[\\color{black}\\titlerule \\vspace{\\SECTIONRULEVSPACE}]
 
 % Ensure that generate pdf is machine readable/ATS parsable
+\\ifdefined\\pdfgentounicode
 \\pdfgentounicode=1
+\\fi
 
 %-------------------------
 % Custom commands
