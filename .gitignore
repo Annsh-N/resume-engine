@@ -1,5 +1,6 @@
 node_modules
 dist
 out
+my-resume/
 .env
 npm-debug.log*
